@@ -4,3 +4,5 @@ import request from './request'
 export const GetHomeLists = () => request.get('/index/index')
 // 历史记录和热门搜索数据的请求
 export const GetPopupData = () => request.get('/search/index')
+
+export const GetSearchTipsListData = (params) => request.get('/search/helper', { params })

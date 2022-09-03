@@ -6,6 +6,7 @@
       :placeholder="placeholderVal"
       @search="onSearch"
       @cancel="onCancel"
+      @input="onInput"
     />
     <HistoryHot
       v-if="blockShow == 1"
@@ -13,17 +14,20 @@
       :searchHotData="searchHotData"
     />
     <SearchTipsList v-else-if="blockShow == 2" :searchTipsArr="searchTipsArr" />
+    <SearchProducts v-else />
   </div>
 </template>
 
 <script>
 import HistoryHot from '@/components/HistoryHot'
 import SearchTipsList from '@/components/SearchTipsList'
-import { GetPopupData } from '@/request/api'
+import SearchProducts from '@/components/SearchProducts'
+import { GetPopupData, GetSearchTipsListData } from '@/request/api'
 export default {
   components: {
     HistoryHot,
-    SearchTipsList
+    SearchTipsList,
+    SearchProducts
   },
   data() {
     return {
@@ -31,7 +35,7 @@ export default {
       placeholderVal: '',
       searchHistoryData: '',
       searchHotData: '',
-      blockShow: 2,
+      blockShow: 3,
       searchTipsArr: [1, 2, 3, 4, 5] // 请求数组从父组件传到子组件
     }
   },
@@ -49,6 +53,14 @@ export default {
     onCancel() {
       // 点击了取消
       this.$router.go(-1)
+    },
+    onInput(val) {
+      this.blockShow = 2
+      // 这个val就是用户输入的文字
+      GetSearchTipsListData({ keyword: val }).then((res) => {
+        console.log(res.data)
+        this.searchTipsArr = res.data
+      })
     }
   }
 }
