@@ -8,12 +8,20 @@
 </template>
 
 <script>
+import { GetHomeLists } from '@/request/api'
 export default {
   name: 'HomeView',
   data() {
     return {
       searchVal: ''
     }
+  },
+  created() {
+    GetHomeLists().then((res) => {
+      if (res.status === 200) {
+        console.log(res.data) // 成功拿到所有首页数据
+      }
+    })
   }
 }
 </script>
