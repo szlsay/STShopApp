@@ -7,16 +7,40 @@
       @search="onSearch"
       @cancel="onCancel"
     />
+    <HistoryHot
+      v-if="blockShow == 1"
+      :searchHistoryData="searchHistoryData"
+      :searchHotData="searchHotData"
+    />
+    <SearchTipsList v-else-if="blockShow == 2" :searchTipsArr="searchTipsArr" />
   </div>
 </template>
 
 <script>
+import HistoryHot from '@/components/HistoryHot'
+import SearchTipsList from '@/components/SearchTipsList'
+import { GetPopupData } from '@/request/api'
 export default {
+  components: {
+    HistoryHot,
+    SearchTipsList
+  },
   data() {
     return {
       searchVal: '',
-      placeholderVal: ''
+      placeholderVal: '',
+      searchHistoryData: '',
+      searchHotData: '',
+      blockShow: 2,
+      searchTipsArr: [1, 2, 3, 4, 5] // 请求数组从父组件传到子组件
     }
+  },
+  created() {
+    GetPopupData().then((res) => {
+      this.placeholderVal = res.data.defaultKeyword.keyword
+      this.searchHistoryData = res.data.historyKeywordList
+      this.searchHotData = res.data.hotKeywordList
+    })
   },
   methods: {
     onSearch(val) {

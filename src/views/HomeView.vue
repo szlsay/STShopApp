@@ -33,7 +33,6 @@ export default {
       .then((res) => {
         const { banner } = res.data
         this.banner = banner
-        console.log(this.banner)
       })
       .catch((err) => {
         console.log('Error')
