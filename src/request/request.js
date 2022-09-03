@@ -20,7 +20,7 @@ instance.interceptors.response.use(
     console.log(
       '每一次接收到响应，都会先执行这里的代码，再去执行成功的那个回调函数then'
     )
-    return res
+    return res.data
   },
   (err) => {
     return Promise.reject(err)

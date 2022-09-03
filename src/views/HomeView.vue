@@ -1,9 +1,11 @@
 <template>
   <div class="home">
-    <span>Welcome to Your Vue.js App</span>
-    <p>Home组件测试vant组件</p>
-    <van-button type="primary">主要按钮</van-button>
     <van-search v-model="searchVal" disable placeholder="请输入搜索关键词" />
+    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="red">
+        <van-swipe-item v-for="item in banner" :key="item.id">
+           <img :src="item.image_url" alt="" width="100%">
+        </van-swipe-item>
+    </van-swipe>
   </div>
 </template>
 
@@ -13,14 +15,18 @@ export default {
   name: 'HomeView',
   data() {
     return {
-      searchVal: ''
+      searchVal: '',
+      banner: []
     }
   },
   created() {
     GetHomeLists().then((res) => {
-      if (res.status === 200) {
-        console.log(res.data) // 成功拿到所有首页数据
-      }
+      const { banner } = res.data
+      this.banner = banner
+      console.log(this.banner)
+    }).catch(err => {
+      console.log('Error')
+      console.log(err)
     })
   }
 }
