@@ -1,5 +1,5 @@
 <template>
-  <div class="popup">
+  <div class="search-popup">
     <van-search
       v-model="searchVal"
       show-action
@@ -10,88 +10,140 @@
     />
     <HistoryHot
       v-if="blockShow == 1"
-      :searchHistoryData="searchHistoryData"
-      :searchHotData="searchHotData"
+      :historyListData="historyListData"
+      :hotKeywordListData="hotKeywordListData"
+      @tagClick="tagClick"
     />
-    <SearchTipsList v-else-if="blockShow == 2" :searchTipsArr="searchTipsArr" />
+    <SearchTipsList
+      v-else-if="blockShow == 2"
+      :searchTipsListData="searchTipsListData"
+      @cellClick="tagClick"
+    />
     <SearchProducts
       v-else
-      :goodsList="goodsList"
       :filterCategory="filterCategory"
+      :goodsList="goodsList"
+      @categoryChange="categoryChange"
+      @priceChange="priceChange"
     />
   </div>
 </template>
-
 <script>
 import HistoryHot from '@/components/HistoryHot'
 import SearchTipsList from '@/components/SearchTipsList'
 import SearchProducts from '@/components/SearchProducts'
 import {
-  GetPopupData,
+  GetSearchPopupData,
   GetSearchTipsListData,
-  GetSearchData
+  GetGoodsListData
 } from '@/request/api'
 export default {
-  components: {
-    HistoryHot,
-    SearchTipsList,
-    SearchProducts
-  },
   data() {
     return {
+      // 搜索的文字，也就是用户输入的文本
       searchVal: '',
+      // 占位符文本
       placeholderVal: '',
-      searchHistoryData: '',
-      searchHotData: '',
+      // blockShow值可以为1或2或3
+      // 为1，表示展示历史记录和热门搜索
+      // 为2，表示展示搜索提示的列表
+      // 为3，表示展示搜索的产品的内容
       blockShow: 1,
-      searchTipsArr: [1, 2, 3, 4, 5], // 请求数组从父组件传到子组件,
+      // 历史记录的列表数据
+      historyListData: [],
+      // 热门搜索列表数据
+      hotKeywordListData: [],
+      // 搜索实时提示的列表数据
+      searchTipsListData: [],
+      // 搜索产品内容的分类数据
+      filterCategory: [],
+      // 搜索产品内容的列表数据
       goodsList: [],
-      filterCategory: []
+      // 价格排序：(由高到低或者由低到高)
+      order: 'desc',
+      // 分类id
+      categoryId: 0,
+      // 搜索方式  是id 还是price
+      sort: 'id'
     }
   },
   created() {
-    GetPopupData().then((res) => {
-      this.placeholderVal = res.data.defaultKeyword.keyword
-      this.searchHistoryData = res.data.historyKeywordList
-      this.searchHotData = res.data.hotKeywordList
+    GetSearchPopupData().then((res) => {
+      if (res.errno === 0) {
+        this.placeholderVal = res.data.defaultKeyword.keyword
+        this.historyListData = res.data.historyKeywordList
+        this.hotKeywordListData = res.data.hotKeywordList
+      }
     })
   },
   methods: {
+    tagClick(val) {
+      // 改变上面搜索框的值，后面再给价格排序的时候调用到priceChange()的时候传入的就是这次点击的这个值
+      this.searchVal = val
+      this.onSearch(val)
+    },
+    priceChange(value) {
+      // value是desc或者asc
+      this.order = value
+      this.sort = 'price'
+      this.onSearch(this.searchVal)
+    },
+    categoryChange(value) {
+      // 改id
+      this.categoryId = value
+      // 发送搜索商品的请求
+      this.onSearch(this.searchVal)
+    },
     onSearch(val) {
-      GetSearchData()
-        .then((res) => {
-          if (res.errno === 0) {
-            this.blockShow = 3
-            this.goodsList = res.data.goodsList
-            this.filterCategory = res.data.filterCategory
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      this.blockShow = 3
+
+      GetGoodsListData({
+        keyword: val,
+        page: 1,
+        size: 10,
+        order: this.order,
+        categoryId: this.categoryId,
+        sort: this.sort
+      }).then((res) => {
+        if (res.errno === 0) {
+          const { filterCategory, goodsList } = res.data
+          this.goodsList = goodsList
+          const newArr = JSON.parse(
+            JSON.stringify(filterCategory)
+              .replace(/name/g, 'text')
+              .replace(/id/g, 'value')
+          )
+          this.filterCategory = newArr
+        }
+      })
     },
     onCancel() {
-      // 点击了取消
       this.$router.go(-1)
     },
     onInput(val) {
       this.blockShow = 2
-      // 这个val就是用户输入的文字
       GetSearchTipsListData({ keyword: val }).then((res) => {
-        console.log(res.data)
-        this.searchTipsArr = res.data
+        if (res.errno === 0) {
+          this.searchTipsListData = res.data
+        }
       })
     }
+  },
+  components: {
+    HistoryHot,
+    SearchTipsList,
+    SearchProducts
   }
 }
 </script>
+
 <style lang="less" scoped>
-.popup {
+.search-popup {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   position: absolute;
-  // right: 0;
   top: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  /* background-color: rgba(0,0,0,.5);     */
+  background-color: #efefef;
 }
 </style>

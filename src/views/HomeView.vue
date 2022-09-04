@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { GetHomeLists } from '@/request/api'
+import { GetHomeList } from '@/request/api'
 export default {
   name: 'HomeView',
   data() {
@@ -29,7 +29,7 @@ export default {
     }
   },
   created() {
-    GetHomeLists()
+    GetHomeList()
       .then((res) => {
         const { banner } = res.data
         this.banner = banner
