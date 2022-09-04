@@ -6,3 +6,5 @@ export const GetHomeLists = () => request.get('/index/index')
 export const GetPopupData = () => request.get('/search/index')
 
 export const GetSearchTipsListData = (params) => request.get('/search/helper', { params })
+// 获取搜索产品内容
+export const GetSearchData = (params) => request.get('/goods/list', { params })

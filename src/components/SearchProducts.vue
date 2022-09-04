@@ -11,13 +11,14 @@
       <van-dropdown-item title="分类" v-model="value2" :options="option2" />
     </van-dropdown-menu>
     <van-empty v-if="isEmpty" image="search" description="抱歉，搜索不到产品" />
-    <Products />
+    <Products :goodsList="goodsList"/>
   </div>
 </template>
 
 <script>
 import Products from './Products'
 export default {
+  props: ['goodsList', 'filterCategory'],
   components: {
     Products
   },

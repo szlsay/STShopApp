@@ -14,7 +14,11 @@
       :searchHotData="searchHotData"
     />
     <SearchTipsList v-else-if="blockShow == 2" :searchTipsArr="searchTipsArr" />
-    <SearchProducts v-else />
+    <SearchProducts
+      v-else
+      :goodsList="goodsList"
+      :filterCategory="filterCategory"
+    />
   </div>
 </template>
 
@@ -22,7 +26,11 @@
 import HistoryHot from '@/components/HistoryHot'
 import SearchTipsList from '@/components/SearchTipsList'
 import SearchProducts from '@/components/SearchProducts'
-import { GetPopupData, GetSearchTipsListData } from '@/request/api'
+import {
+  GetPopupData,
+  GetSearchTipsListData,
+  GetSearchData
+} from '@/request/api'
 export default {
   components: {
     HistoryHot,
@@ -35,8 +43,10 @@ export default {
       placeholderVal: '',
       searchHistoryData: '',
       searchHotData: '',
-      blockShow: 3,
-      searchTipsArr: [1, 2, 3, 4, 5] // 请求数组从父组件传到子组件
+      blockShow: 1,
+      searchTipsArr: [1, 2, 3, 4, 5], // 请求数组从父组件传到子组件,
+      goodsList: [],
+      filterCategory: []
     }
   },
   created() {
@@ -48,7 +58,17 @@ export default {
   },
   methods: {
     onSearch(val) {
-      console.log('按了回车')
+      GetSearchData()
+        .then((res) => {
+          if (res.errno === 0) {
+            this.blockShow = 3
+            this.goodsList = res.data.goodsList
+            this.filterCategory = res.data.filterCategory
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     onCancel() {
       // 点击了取消

@@ -1,15 +1,22 @@
 <template>
   <ul>
-    <li>
-      <img :src="imgSrc" style="display: block" width="100%" alt="" />
-      <div class="van-ellipsis">产品名称</div>
-      <div class="price">{{ 99 | RMBformat }}</div>
+    <li v-for="item in goodsList" :key="item.id">
+      <img
+        :src="item.list_pic_url"
+        style="display: block"
+        width="100%"
+        alt=""
+      />
+      <div class="van-ellipsis">{{ item.name }}</div>
+      <div class="price">{{ item.retail_price | RMBformat }}</div>
+      <!-- | RMBformat -->
     </li>
   </ul>
 </template>
 
 <script>
 export default {
+  props: ['goodsList'],
   data() {
     return {
       imgSrc: require('@/assets/logo.png')
@@ -30,7 +37,7 @@ ul {
     background: #fff;
     text-align: center;
     line-height: 0.3rem;
-    .price {
+    .price {Z
       color: darkred;
     }
   }

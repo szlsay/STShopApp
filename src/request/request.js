@@ -6,8 +6,8 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    console.log('每一次发起请求前，都会先执行这里的代码')
-    console.log(config) // config本次请求的配置信息
+    // console.log('每一次发起请求前，都会先执行这里的代码')
+    // console.log(config) // config本次请求的配置信息
     return config
   },
   (err) => {
@@ -17,9 +17,9 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (res) => {
-    console.log(
-      '每一次接收到响应，都会先执行这里的代码，再去执行成功的那个回调函数then'
-    )
+    // console.log(
+    //   '每一次接收到响应，都会先执行这里的代码，再去执行成功的那个回调函数then'
+    // )
     return res.data
   },
   (err) => {

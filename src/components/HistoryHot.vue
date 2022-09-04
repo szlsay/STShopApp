@@ -60,6 +60,7 @@ export default {
   .van-tag {
     padding: 0.04rem;
     margin-right: 0.1rem;
+    margin-bottom: 0.05rem;
   }
 }
 </style>
