@@ -9,7 +9,9 @@ import {
   List,
   Cell,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  Empty,
+  Toast
 } from 'vant'
 Vue.use(Search)
 Vue.use(Button)
@@ -21,3 +23,5 @@ Vue.use(List)
 Vue.use(Cell)
 Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
+Vue.use(Empty)
+Vue.use(Toast)

@@ -1,13 +1,14 @@
 <template>
-  <div class="history-hot">
-    <div class="his-hot">
+  <div>
+    <div class="his-hot" v-show="isShowHistory">
       <div class="hd">
         <h4>历史记录</h4>
-        <van-icon name="delete" />
+        <van-icon name="delete" @click="clearHistory" />
       </div>
       <div class="bd">
         <van-tag
-          v-for="(item, index) in searchHistoryData"
+          @click="tagClick(item)"
+          v-for="(item, index) in historyListData"
           :key="index"
           plain
           type="default"
@@ -22,10 +23,12 @@
       </div>
       <div class="bd">
         <van-tag
-          v-for="(item, index) in searchHotData"
+          @click="tagClick(item.keyword)"
+          v-for="(item, index) in hotKeywordListData"
           :key="index"
           plain
-          :type="item.is_hot ? 'danger' : 'default'"
+          type="default"
+          :class="item.is_hot ? 'red' : ''"
           >{{ item.keyword }}</van-tag
         >
       </div>
@@ -34,33 +37,57 @@
 </template>
 
 <script>
+import { ClearHistory } from '@/request/api'
 export default {
   data() {
-    return {}
+    return {
+      isShowHistory: true
+    }
   },
-  props: ['searchHistoryData', 'searchHotData']
+  props: ['historyListData', 'hotKeywordListData'],
+  methods: {
+    tagClick(val) {
+      // console.log(val);
+      this.$emit('tagClick', val)
+    },
+    clearHistory() {
+      ClearHistory().then((res) => {
+        if (res.errno === 0) {
+          // console.log(res);
+          // 提示语
+          this.$toast.success('删除成功')
+          setTimeout(() => {
+            // 隐藏历史记录的这个盒子
+            this.isShowHistory = false
+          }, 1000)
+        }
+      })
+    }
+  }
 }
 </script>
 
 <style lang="less" scoped>
 .his-hot {
+  background-color: #ffffff;
+  padding: 0.1rem;
   margin-bottom: 0.2rem;
-  background-color: #fff;
-  padding: 2%;
   .hd {
-    padding-top: 2%;
     display: flex;
     justify-content: space-between;
-    font-size: 0.22rem;
-    margin-bottom: 0.1rem;
+    font-size: 0.24rem;
+    margin-bottom: 0.08rem;
     h4 {
       font-size: 0.2rem;
     }
   }
+
   .van-tag {
-    padding: 0.04rem;
-    margin-right: 0.1rem;
-    margin-bottom: 0.05rem;
+    margin-right: 0.05rem;
+    padding: 0.03rem;
+  }
+  .red {
+    color: darkred;
   }
 }
 </style>
