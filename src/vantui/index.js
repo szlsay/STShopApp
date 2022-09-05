@@ -11,7 +11,9 @@ import {
   DropdownMenu,
   DropdownItem,
   Empty,
-  Toast
+  Toast,
+  Tabbar,
+  TabbarItem
 } from 'vant'
 Vue.use(Search)
 Vue.use(Button)
@@ -25,3 +27,5 @@ Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
 Vue.use(Empty)
 Vue.use(Toast)
+Vue.use(Tabbar)
+Vue.use(TabbarItem)
